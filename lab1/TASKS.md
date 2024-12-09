@@ -47,4 +47,19 @@ select * from Items;
 ## Task 2 - Write a Containerfile for nodejs application
 
 1. The Containerfile should satisfy the following requirements
-    * Base image should be node
+    * The location of Containerfile should be ~/hpb-educ/lab1/nodejs/Containerfile
+    * Base image should be node:5
+    * WORKDIR should be /home/node/app
+    * Copy the contents of nodejs folder into WORKDIR
+    * Run ```npm install```
+    * Set CMD to run ```node app.js```
+
+2. Build the Containerfile and name the image todo:latest
+
+3. Create container with builded image. The container should have the following properties:
+    * Container name is todo
+    * Container is running in background (detached mode)
+    * Set the values od the following environment variables MYSQL_ENV_MYSQL_DATABASE, MYSQL_ENV_MYSQL_USER, MYSQL_ENV_MYSQL_PASSWORD to values you have specified when starting mysql container.
+    * Container is attached to mynet network
+    * Container image used is todo:latest
+    * Publish port 30080
