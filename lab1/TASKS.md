@@ -13,7 +13,7 @@ Clone this repo with the following command:
 
 1. Go to public DockerHub repo and find mysql 5.5 container image. Go through the documentation and find which environment variables are used for database configuration, especially MYSQL_ROOT_PASSWORD, MYSQL_USER, MYSQL_PASSWORD and MYSQL_DATABASE.
 
-2. Create podman network mynet using bridge driver.
+2. Create internal podman network mynet using bridge driver.
 
 3. Create a directory for mysql data in /home/<your_username>/mysql
 
@@ -41,7 +41,7 @@ create table Item (id bigint not null auto_increment, description varchar(255), 
 show tables;
 
 # Check if select works
-select * from Items;
+select * from Item;
 ```
 
 ## Task 2 - Write a Containerfile for nodejs application and run the application
@@ -65,3 +65,23 @@ select * from Items;
     * Container is attached to mynet network
     * Container image used is todo:latest
     * Publish port 30080
+
+5. Find out the port on which the application is listening.
+
+6. Test the app by openhing the URL ```http://hpb1.tn.hr:<port>/todo/```. Please note that the last trailing slash (/) is important, so don't omit him.
+
+7. Cleanup everything by stopping the containers, removing them, removing the images and network mynet.
+
+## Task 3 (Optional) - Build todo app using buildah
+
+1. Build the same todo application from Task 2, Step 1 using Buildah and commit the builded image as todo:latest.
+
+2. List the images with podman.
+
+3. Start the todo app like in task 2.
+
+4. Observe the logs of todo app.
+
+5. Access the application through URL.
+
+6. Stop and cleanup everything.
