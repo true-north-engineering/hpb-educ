@@ -1,13 +1,6 @@
 # Lab 1 - Containers
 
-Before starting with lab exercises connect to the linux system hpb1.tn.hr with ssh or putty as userX where X is a number designated to you by the presenter.
-Example:
-
-```ssh userX@hpb1.tn.hr```
-
-Clone this repo with the following command:
-
-```git clone https://github.com/true-north-engineering/hpb-educ.git```
+Be aware that these solutions are for ***user50***. Please adjust all paths for your username!
 
 ## Task 1 - Create mysql container
 
@@ -15,7 +8,11 @@ Clone this repo with the following command:
 
 2. Create podman network mynet using bridge driver.
 
+```podman network create -d bridge mynet```
+
 3. Create a directory for mysql data in /home/<your_username>/mysql
+
+```mkdir /home/user50/mysql```
 
 4. Create container which has the following properties:
     * Container name is mysql
@@ -25,12 +22,20 @@ Clone this repo with the following command:
     * Container mounts /home/<your_username>/mysql on host system to /var/lib/mysql folder in the container
     * Container image used is mysql:5.5
 
+```podman run -d --name mysql -e MYSQL_ROOT_PASSWORD=r00tpassw0rd -e MYSQL_USER=todo -e MYSQL_PASSWORD=todopassw0rd -e MYSQL_DATABASE=todo --network mynet -v /home/user50/mysql:/var/lib/mysql:Z mysql:5.5```
+
 5. List the running containers
+
+```podman ps```
 
 6. Observe the logs of mysql container
 
+```podman logs mysql```
+
 7. Exec into the container, connect to the database specified with environment variables and create the ***Item*** table
 ```
+podman exec -it mysql bash
+
 # Command for connecting to the database
 mysql -h localhost -u<mysql_username> -p<mysql_password> <mysql_database>
 
@@ -54,9 +59,33 @@ select * from Items;
     * Run ```npm install```
     * Set CMD to run ```node app.js```
 
+```
+cd ~/hpb-educ/lab1/nodejs
+vi Containerfile
+```
+
+Content of the Containerfile:
+
+```
+FROM node:5
+
+WORKDIR /home/node/app
+COPY . /home/node/app
+RUN npm install
+
+CMD ["node", "app.js"]
+```
+
 2. Build the Containerfile and name the image todo:latest
 
+```podman build -t todo:latest .```
+
 3. List and inspect the builded image
+
+```
+podman images
+podman inspect todo:latest
+```
 
 4. Create container with builded image. The container should have the following properties:
     * Container name is todo
@@ -65,3 +94,5 @@ select * from Items;
     * Container is attached to mynet network
     * Container image used is todo:latest
     * Publish port 30080
+
+```podman run -d -p 30080:30080 --network foo -e MYSQL_ENV_MYSQL_DATABASE=todo -e MYSQL_ENV_MYSQL_USER=todo -e MYSQL_ENV_MYSQL_PASSWORD=todopassw0rd --name todo todo:latest```
