@@ -72,7 +72,20 @@ select * from Item;
 
 7. Cleanup everything by stopping the containers, removing them, removing the images and network mynet.
 
-## Task 3 (Optional) - Build todo app using buildah
+## Task 3 - Push the image to Nexus
+
+1. Go to https://nexus.ocp.hpb.tn.hr and login with username admin. Password is the same as password for your ssh user on hpb1.tn.hr
+
+2. Login with podman to nexus-docker.ocp.hpb.tn.hr.
+
+3. Tag the todo:latest image with podman to nexus-docker.ocp.hpb.tn.hr/todo:<your_username>
+
+4. Push the image to Nexus.
+
+5. Browse the Nexus through web interface and find your image.
+
+
+## Task 4 (Optional) - Build todo app using buildah
 
 1. Build the same todo application from Task 2, Step 1 using Buildah and commit the builded image as todo:latest.
 
