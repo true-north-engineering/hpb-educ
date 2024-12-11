@@ -68,9 +68,7 @@ select * from Item;
 
 5. Find out the port on which the application is listening.
 
-6. Test the app by openhing the URL ```http://hpb1.tn.hr:<port>/todo/```. Please note that the last trailing slash (/) is important, so don't omit him.
-
-7. Cleanup everything by stopping the containers, removing them, removing the images and network mynet.
+6. Test the app by opening the URL ```http://hpb1.tn.hr:<port>/todo/```. Please note that the last trailing slash (/) is important, so don't omit him.
 
 ## Task 3 - Push the image to Nexus
 
@@ -84,8 +82,11 @@ select * from Item;
 
 5. Browse the Nexus through web interface and find your image.
 
+## Task 4 - Cleanup
 
-## Task 4 (Optional) - Build todo app using buildah
+1. Cleanup everything by stopping the containers, removing them, removing the images and network mynet.
+
+## Task 5 (Optional) - Build todo app using buildah
 
 1. Build the same todo application from Task 2, Step 1 using Buildah and commit the builded image as todo:latest.
 

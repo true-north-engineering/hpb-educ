@@ -107,25 +107,6 @@ Note the PORTS column of todo container. It has a value like ```0.0.0.0:40589->3
 
 Open URL http://hpb1.tn.hr:40589/todo/
 
-7. Cleanup everything by stopping the containers, removing them, removing the images and network mynet.
-
-```
-podman ps
-podman stop todo
-podman stop mysql
-podman ps
-podman ps -a
-podman rm -a
-
-podman images
-podman rmi -a
-podman images -a
-
-podman network ls
-podman network rm mynet
-podman network ls
-```
-
 ## Task 3 - Push the image to Nexus
 
 1. Go to https://nexus.ocp.hpb.tn.hr and login with username admin. Password is the same as password for your ssh user on hpb1.tn.hr
@@ -144,8 +125,28 @@ podman network ls
 
 5. Browse the Nexus through web interface and find your image.
 
+## Task 4 - Cleanup
 
-## Task 4 (Optional) - Build todo app using buildah
+1. Cleanup everything by stopping the containers, removing them, removing the images and network mynet.
+
+```
+podman ps
+podman stop todo
+podman stop mysql
+podman ps
+podman ps -a
+podman rm -a
+
+podman images
+podman rmi -a
+podman images -a
+
+podman network ls
+podman network rm mynet
+podman network ls
+```
+
+## Task 5 (Optional) - Build todo app using buildah
 
 1. Build the same todo application from Task 2, Step 1 using Buildah and commit the builded image as todo:latest.
 
