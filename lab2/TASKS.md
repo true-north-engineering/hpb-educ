@@ -1,4 +1,4 @@
-# Lab1 - Openshift access:
+# Lab 1 - Openshift access:
 
 Open OpenShift console:
 `https://console-openshift-console.ocp.hpb.tn.hr`
@@ -13,13 +13,13 @@ Check your ID by running `oc whami`.
 
 List all projects.
 
-# Lab2 - Create Project
+# Lab 2 - Create Project
 
 Create a project for rest of the labs.
 
 Use either Openshift web console, or `oc` command to create a new project named `UserX`, same as your user on day 1.
 
-# Lab3 - Deploy `PostgreSQL (Ephemeral)` database from template.
+# Lab 3 - Deploy `PostgreSQL (Ephemeral)` database from template.
 
 Login to OpenShift web console.
 
@@ -36,7 +36,7 @@ Leave rest of the fields blank.
 
 Wait for `PostgreSQL (Ephemeral)` to be ready.
 
-# Lab4 - Create image pull secret
+# Lab 4 - Create image pull secret
 
 Login to OpenShift console.
 
@@ -52,7 +52,7 @@ user: admin
 password: H4p3b3$J4k0Ultr4!3duc.
 ```
 
-# Lab5 - Deploy `animals` application using `oc` command
+# Lab 5 - Deploy `animals` application using `oc` command
 
 `animals` is an aplication that tells you what animals live on your servers. When deploying app you can choose what animal you want to check by setting `ANIMAL` environment variable, and if that animal exists, it will tell you their names.
 
@@ -161,3 +161,27 @@ Increase the replica count of `animals` app to 3. Then start new rollout of depl
 Now change strategy to Recreate and start another rollot. Notice that this time all of the old pods get destroyed before new pods are created.
 
 Scale the `cat` pod replicas to 1.
+
+# Lab 12 - Restart postgresql database
+
+Restart the database by deleting it's pod.
+
+Try calling `animals` app and see the result.
+
+The database we created is `ephemeral` so every time we restart the database, we loose all the data.
+
+# Lab 13 - Create a persistent volume claim
+
+Each time `animals` app is started it creates the db if it's missing and populates it with names from `/app/names' file inside container. We will replace that file with our own list of names and repopulate the database.
+
+Create a `Persistent Volume Claim` named `animal-data`. Use `ibmc-file-bronze-gid` storage class and `rwx` access mode, the volume can be small, 100MiB is more than enough.
+
+# Lab 14 - Populate volume with data
+
+Each time `animals` app is started it creates the db if it's missing and populates it with names from `/app/data/names` file inside container. We will replace that file with our own list of names and repopulate the database. A file has been pepared for you in github repo at `https://raw.githubusercontent.com/true-north-engineering/hpb-educ/refs/heads/main/lab3/names`, but you can use your own.
+
+Create a job that uses `alpine/curl` image to download the names file into `PVC` you created before.
+
+# Lab 15 - Mount the volume into animals container
+
+Mount the volume with your custom names into `animals` app pod under `/app/data/` path. Changing deployment will automatically initiate restarting of pod. Once restarted try calling the app again and see that names are now those in the new file.

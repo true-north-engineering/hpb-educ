@@ -212,3 +212,53 @@ Scale the `cat` pod replicas to 1.
 ```
 $ oc scale deployment cat --replicas 1
 ```
+
+# Lab 12 - Restart postgresql database
+
+Restart the database by deleting it's pod.
+
+Find the pod name with:
+```
+$ oc get pods
+NAME                                 READY   STATUS      RESTARTS   AGE
+animalsdb-1-bjp6m                    1/1     Running     0          21m
+```
+Delete the pod:
+```
+$ oc delete pod animalsdb-1-bjp6m
+```
+
+Try calling `animals` app and see the result.
+```
+$ curl http://cat-user49.ocp.hpb.tn.hr/                                                                                                                                             
+There is no cat living on cat-65dc89cb58-b7nb8.
+```
+
+The database we created is `ephemeral` so every time we restart the database, we loose all the data.
+
+# Lab 13 - Create a persistent volume claim
+
+Each time `animals` app is started it creates the db if it's missing and populates it with names from `/app/names' file inside container. We will replace that file with our own list of names and repopulate the database.
+
+Create a `Persistent Volume Claim` named `animal-data`. Use `ibmc-file-bronze-gid` storage class and `rwx` access mode, the volume can be small, 100MiB is more than enough.
+```
+$ oc apply -f animals-cat-pvc.yaml
+```
+
+# Lab 14 - Populate volume with data
+
+Each time `animals` app is started it creates the db if it's missing and populates it with names from `/app/data/names` file inside container. We will replace that file with our own list of names and repopulate the database. A file has been pepared for you in github repo at `https://raw.githubusercontent.com/true-north-engineering/hpb-educ/refs/heads/main/lab3/names`, but you can use your own.
+
+Create a job that uses `alpine/curl` image to download the names file into `PVC` you created before.
+```
+$ oc apply -f populate-pvc-job.yaml
+```
+
+# Lab 15 - Mount the volume into animals container
+
+Mount the volume with your custom names into `animals` app pod under `/app/data/` path. Changing deployment will automatically initiate restarting of pod.
+```
+oc set volume deployment cat --add --name=animal-data --type=persistentVolumeClaim --claim-name=animal-data --mount-path=/app/data
+```
+
+Once restarted try calling the app again and see that names are now those in the new file.
