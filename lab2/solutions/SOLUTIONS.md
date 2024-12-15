@@ -1,4 +1,4 @@
-#Lab1 - Openshift access:
+# Lab1 - Openshift access:
 
 Open OpenShift console:
 `https://console-openshift-console.ocp.hpb.tn.hr`
@@ -16,7 +16,7 @@ List all visible projects.
 $ oc projects
 ```
 
-#Lab2 - Create Project
+# Lab2 - Create Project
 
 Create a project for rest of the labs.
 
@@ -26,7 +26,7 @@ Use either Openshift web console, or `oc` command to create a new project named 
 $ oc new-project userX
 ```
 
-#Lab3 - Deploy `PostgreSQL (Ephemeral)` database from template.
+# Lab3 - Deploy `PostgreSQL (Ephemeral)` database from template.
 
 Login to OpenShift web console.
 
@@ -54,7 +54,7 @@ animalsdb-1-q9lm7                    1/1     Running     0          3h20m
 ```
 `animalsdb` pod should be in `Runnning` state.
 
-#Lab4 - Create image pull secret
+# Lab4 - Create image pull secret
 
 Login to OpenShift console.
 
@@ -70,7 +70,7 @@ user: admin
 password: <user password from day1>
 ```
 
-#Lab5 - Deploy `animals` application using `oc` command
+# Lab5 - Deploy `animals` application using `oc` command
 
 `animals` is an aplication that tells you what animals live on your servers. When deploying app you can choose what animal you want to check by setting `ANIMAL` environment variable, and if that animal exists, it will tell you their names.
 
@@ -81,7 +81,7 @@ Create the deployment using oc command:
 $ oc apply -f animals-cat-deployment.yaml
 ```
 
-#Lab 6 - Expose `animals` application
+# Lab 6 - Expose `animals` application
 
 Use `oc` command to expose `animals` application.
 ```
@@ -92,7 +92,7 @@ Once deployment is exposed, find the service that was created using `oc` comand 
 $ oc get services
 ```
 
-#Lab 7 - Allow external acces for `animals` application with a route
+# Lab 7 - Allow external acces for `animals` application with a route
 
 Use either web console or oc command to create a route for `animals` application.
 ```
@@ -102,7 +102,7 @@ Once you have the route created, note the url that was created.
 ```
 $ oc get routes
 ```
-#Lab 8 - Call `animals` application
+# Lab 8 - Call `animals` application
 
 Open the url from `animals` route in your browser and see the result.
 In previous lab you should get output similar to:
@@ -122,7 +122,7 @@ $ curl http://animals-userX.ocp.hpb.tn.hr/
 It's a cat named Lucy living on cat-d77c74f76-rnqpd.
 ```
 
-#Lab 9 - Add environmet variables from secret
+# Lab 9 - Add environmet variables from secret
 
 When you deployed your `PostgreSQL` database, a `secret` with the same name was created. Inside that secret are parameters to connect to DB.
 
@@ -150,7 +150,7 @@ You should see new config in yaml file:
                   name: animalsdb
                   key: database-name
 ```
-#Lab 9 - Add configurations from configmap
+# Lab 10 - Add configurations from configmap
 
 Now that we have database config from secret, externalize rest of the config by creating a config map.
 
@@ -172,7 +172,7 @@ Remove current environment variables (`ANIMAL`, `DB_HOST`, DB_PORT`), and add th
             - configMapRef:
                 name: cat
 ```
-#Lab 10 - Deployment strategies
+# Lab 11 - Deployment strategies
 
 Increase the replica count of `animals` app to 3.
 ```
