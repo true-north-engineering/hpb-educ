@@ -47,7 +47,7 @@ Choose `Create` and select `Image pull secret` from dropdown menu.
 Use following parameters
 ```
 name: nexus-pull-secret
-url: nexus-docker.ocp.hpb.tn.hr`
+url: nexus-docker.ocp.hpb.tn.hr
 user: admin
 password: H4p3b3$J4k0Ultr4!3duc.
 ```
