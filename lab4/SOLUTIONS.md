@@ -223,7 +223,7 @@ spec:
         - name: TLSVERIFY
           value: 'true'
         - name: IMAGE
-          value: 'nexus-docker.ocp.hpb.tn.hr/todo-frontend:$(params.revision)'
+          value: 'nexus-docker.ocp.hpb.tn.hr/todo-frontend:user1'
         - name: BUILDER_IMAGE
           value: 'registry.redhat.io/rhel8/buildah@sha256:5c7cd7c9a3d49e8905fc98693f6da605aeafae36bde5622dc78e12f31db3cd59'
         - name: SKIP_PUSH
