@@ -19,14 +19,33 @@ Example:
 
 1. Create an Openshift project called by your username, e.g. user1
 
-2. Connect to the Openshift on ```https://console-openshift-console.ocp.hpb.tn.hr/```. In project ```hpb-cicd``` you have Tekton pipeline examples. Copy them to your project.
+2. Create ```nexus-docker-auth``` secret that containes authentication data for ```nexus-docker.ocp.hpb.tn.hr```. Link that secret with ```pipeline``` service account.
 
-3. Create ```nexus-docker-auth``` secret that containes authentication data for ```nexus-docker.ocp.hpb.tn.hr```. Link that secret with ```pipeline``` service account.
+3. Create todo-api pipeline which has the following properties:
+    * Define one parameter ```revision``` which will hold the git branch or commit sha of the code to clone.
+    * Define one workspace ```source``` which represents the workspace (persistent volume) where the source code will be cloned locally.
+    * First task is git-clone:
+        * Github URL to clone is ```https://github.com/true-north-engineering/hpb-educ-src.git```
+        * Revision to checkout is taken from the ```revision``` parameter. Hint: ```$(params.revision)```
+        * Output workspace should be ```source```
+    * Second task is s2i-java and it sould run after git-clone is successfully done
+        * Java version should be 11
+        * Context path sould be ```todo-api```
+        * Produced image sould be ```nexus-docker.ocp.hpb.tn.hr/todo-api:<your_username>```
+        * Workspace where the source resides is ```source```
 
-4. Adjust the values in Tekton pipelines in your project:
-    * Java version for build should be 11.
-    * Location to push the builded image sould be ```nexus-docker.ocp.hpb.tn.hr/todo-api:<your_username>```
-    * Correct any other mistakes in ```todo-api``` pipeline, ```s2i-java``` task.
+4. Create todo-frontend pipeline which has the following properties:
+    * Define one parameter ```revision``` which will hold the git branch or commit sha of the code to clone.
+    * Define one workspace ```source``` which represents the workspace (persistent volume) where the source code will be cloned locally.
+    * First task is git-clone:
+        * Github URL to clone is ```https://github.com/true-north-engineering/hpb-educ-src.git```
+        * Revision to checkout is taken from the ```revision``` parameter. Hint: ```$(params.revision)```
+        * Output workspace should be ```source```
+    * Second task is s2i-nodejs and it sould run after git-clone is successfully done
+        * NodeJS version should be 16-ubi8
+        * Context path sould be ```todo-frontend```
+        * Produced image sould be ```nexus-docker.ocp.hpb.tn.hr/todo-frontend:<your_username>```
+        * Workspace where the source resides is ```source```
 
 5. Build ```todo-api``` and ```todo-frontend``` applications using Tekton pipelines. Use the VolumeClaimTemplate for persistence.
 
@@ -34,24 +53,26 @@ Example:
 
 ## Task 3 - Deploy the solution
 
-1. Check the ```https://github.com/true-north-engineering/hpb-educ-src``` source and the Helm template for the solution in ```helm/todo```folder.
+1. Clone the ```https://github.com/true-north-engineering/hpb-educ-src``` Git repo locally and checkout branch with your username. Check the ```helm/todo``` folder and get yourself familliar with the application Helm chart.
 
-2. In Argocd ```https://gitops.ocp.hpb.tn.hr``` create a new application with following properties:
-    * Application name should be ```<your_username>-todo```
-    * Application project should be ```default```
-    * Repository URL should be ```https://github.com/true-north-engineering/hpb-educ-src.git```
-    * Repository revision should be ```main```
-    * Repository path should be ```helm/todo```
-    * Deployment target should be local Openshift and namespace that you have creates in Task 2, Step 1
-    * Select values files ```values.yaml```
-    * Override the following properties:
+2. Clone the ```https://github.com/true-north-engineering/hpb-educ-src``` and ***checkout branch with your username***
+    * Change the following properties in ```values.yaml```, commit them and push to the Github repo
         * fe.image.tag should contain the tag of your frontend image
         * api.image.tag should contain the tag of your api image
         * route.host should be ```todo-<your_username>.ocp.hpb.tn.hr```
 
-3. Observe the applications in Openshift. Check the application logs and test the application.
+3. In Argocd ```https://gitops.ocp.hpb.tn.hr``` create a new application with following properties:
+    * Application name should be ```<your_username>-todo```
+    * Application project should be ```default```
+    * Repository URL should be ```https://github.com/true-north-engineering/hpb-educ-src.git```
+    * Repository revision (branch) should be your username
+    * Repository path should be ```helm/todo```
+    * Deployment target should be local Openshift and namespace that you have creates in Task 2, Step 1
+    * Select values files ```values.yaml```
 
-4. Connect to mysql pod and create the necessary tables:
+4. Observe the applications in Openshift. Check the application logs and test the application.
+
+5. Connect to mysql pod and create the necessary tables:
 
 ```
 mysql -h localhost -utodo -ptodopassw0rd todo
@@ -61,4 +82,4 @@ CREATE TABLE hibernate_sequence ( next_val BIGINT );
 insert into hibernate_sequence values (1);
 ```
 
-5. Restart the applications and test it.
+6. Restart the applications and test it.
