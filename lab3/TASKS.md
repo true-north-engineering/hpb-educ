@@ -49,7 +49,6 @@ You can check the pod logs and see that `readyz` endpoint is returning `500` cod
 
 To enable dragons, we need to add an entry to database. Either use web console to open a terminal to `animalsdb` pod, or use `oc` command to exec remotely.
 
-```
 Once in pod, we can connect to database and insert `dragon` into `animals` table:
 ```
 $ psql animals
