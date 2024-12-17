@@ -41,6 +41,8 @@ spec:
           image: 'nexus-docker.ocp.hpb.tn.hr/animals:latest'
       imagePullSecrets:
         - name: nexus-pull-secret
+  strategy:
+    type: RollingUpdate
 ---
 kind: DeploymentConfig
 apiVersion: apps.openshift.io/v1
@@ -133,11 +135,14 @@ kind: Service
 apiVersion: v1
 metadata:
   name: cat
+  labels:
+    app: cat
 spec:
   ports:
     - protocol: TCP
       port: 5000
       targetPort: 5000
+      name: http
   type: ClusterIP
   selector:
     app: cat
