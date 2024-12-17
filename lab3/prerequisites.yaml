@@ -1,0 +1,188 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: cat
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cat
+  template:
+    metadata:
+      labels:
+        app: cat
+    spec:
+      containers:
+        - name: cat
+          env:
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: animalsdb
+                  key: database-user
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: animalsdb
+                  key: database-password
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: animalsdb
+                  key: database-name
+          ports:
+            - name: http
+              containerPort: 5000
+              protocol: TCP
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: cat
+          image: 'nexus-docker.ocp.hpb.tn.hr/animals:latest'
+      imagePullSecrets:
+        - name: nexus-pull-secret
+---
+kind: DeploymentConfig
+apiVersion: apps.openshift.io/v1
+metadata:
+  name: animalsdb
+spec:
+  strategy:
+    type: Recreate
+  replicas: 1
+  selector:
+    name: animalsdb
+  template:
+    metadata:
+      labels:
+        name: animalsdb
+    spec:
+      volumes:
+        - name: animalsdb-data
+          emptyDir: {}
+      containers:
+        - resources:
+            limits:
+              memory: 512Mi
+          readinessProbe:
+            exec:
+              command:
+                - /usr/libexec/check-container
+            initialDelaySeconds: 5
+            timeoutSeconds: 1
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          terminationMessagePath: /dev/termination-log
+          name: postgresql
+          livenessProbe:
+            exec:
+              command:
+                - /usr/libexec/check-container
+                - '--live'
+            initialDelaySeconds: 120
+            timeoutSeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          env:
+            - name: POSTGRESQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: animalsdb
+                  key: database-user
+            - name: POSTGRESQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: animalsdb
+                  key: database-password
+            - name: POSTGRESQL_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: animalsdb
+                  key: database-name
+          ports:
+            - containerPort: 5432
+              protocol: TCP
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: animalsdb-data
+              mountPath: /var/lib/pgsql/data
+          image: 'image-registry.openshift-image-registry.svc:5000/openshift/postgresql:10-el8'
+---
+kind: Secret
+apiVersion: v1
+metadata:
+  name: animalsdb
+data:
+  database-name: YW5pbWFscw==
+  database-password: NG4xbTRsIQ==
+  database-user: YW5pbWFs
+type: Opaque
+---
+kind: Secret
+apiVersion: v1
+metadata:
+  name: nexus-pull-secret
+  namespace: user49
+data:
+  .dockerconfigjson: eyJhdXRocyI6eyJuZXh1cy1kb2NrZXIub2NwLmhwYi50bi5ociI6eyJ1c2VybmFtZSI6ImFkbWluIiwicGFzc3dvcmQiOiJINHAzYjMkSjRrMFVsdHI0ITNkdWMuIiwiYXV0aCI6IllXUnRhVzQ2U0RSd00ySXpKRW8wYXpCVmJIUnlOQ0V6WkhWakxnPT0iLCJlbWFpbCI6IiJ9fX0=
+type: kubernetes.io/dockerconfigjson
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: cat
+spec:
+  ports:
+    - protocol: TCP
+      port: 5000
+      targetPort: 5000
+  type: ClusterIP
+  selector:
+    app: cat
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: animalsdb
+spec:
+  ports:
+    - name: postgresql
+      protocol: TCP
+      port: 5432
+      targetPort: 5432
+  type: ClusterIP
+  selector:
+    name: animalsdb
+---
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: cat
+spec:
+  to:
+    kind: Service
+    name: cat
+    weight: 100
+  port:
+    targetPort: 5000
+  wildcardPolicy: None
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: cat
+data:
+  ANIMAL: cat
+  DB_HOST: animalsdb
+  DB_PORT: '5432'
+---
+kind: ResourceQuota
+apiVersion: v1
+metadata:
+  name: pod-limit
+spec:
+  hard:
+    pods: '5'
+---

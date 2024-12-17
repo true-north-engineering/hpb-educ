@@ -1,0 +1,64 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: cat
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cat
+  template:
+    metadata:
+      labels:
+        app: cat
+    spec:
+      containers:
+        - name: cat
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: 5000
+              scheme: HTTP
+            timeoutSeconds: 1
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          terminationMessagePath: /dev/termination-log
+          name: cat
+          livenessProbe:
+            httpGet:
+              path: /livez
+              port: 5000
+              scheme: HTTP
+            timeoutSeconds: 1
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          env:
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: animalsdb
+                  key: database-user
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: animalsdb
+                  key: database-password
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: animalsdb
+                  key: database-name
+          ports:
+            - name: http
+              containerPort: 5000
+              protocol: TCP
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: cat
+          image: 'nexus-docker.ocp.hpb.tn.hr/animals:latest'
+      imagePullSecrets:
+        - name: nexus-pull-secret
+
