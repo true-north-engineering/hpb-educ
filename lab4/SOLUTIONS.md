@@ -336,6 +336,8 @@ mysql:
 
 4. Observe the applications in Openshift. Check the application logs and test the application.
 
+```Open the following URL in browser - https://todo-user1.ocp.hpb.tn.hr```
+
 5. Connect to mysql pod and create the necessary tables:
 
 ```
