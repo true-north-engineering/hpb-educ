@@ -1,4 +1,4 @@
-#Lab 0 - Prerequisites
+# Lab 0 - Prerequisites
 
 To beggin, apply `prerquisites.yaml` to your project.
 ```
@@ -7,7 +7,7 @@ $ oc apply -f prerequisites.yaml
 
 This will create objects needed for this lab.
 
-#Lab 1 - Change number of replicas of `cat` deployment
+# Lab 1 - Change number of replicas of `cat` deployment
 
 Use either web console or oc command to edit the `cat` deployment and increase number of replicas to 3.
 
@@ -19,7 +19,7 @@ I you change number of replicas you can see that openshift automatically balance
 
 Set number of replicas back to 1.
 
-#Lab 2 - Add liveliness and readiness probes
+ #Lab 2 - Add liveliness and readiness probes
 
 `animals` application provides `livez` and `readyz` endpoints to enable health checks.
 
@@ -29,7 +29,7 @@ Use `/readyz` on port `5000` for readiness probe, and `/livez` on port `5000` fo
 
 You can check container logs and see that `readyz` and `/livez` endpoints are called every few seconds.
 
-#Lab 3 - Check if there are any dragons
+# Lab 3 - Check if there are any dragons
 
 We saw that many cats live in our pods, let's check if there are any dragons.
 
@@ -45,7 +45,7 @@ This is because animals application checks whether animals exist in PostgreSQL d
 
 You can check the pod logs and see that `readyz` endpoint is returning `500` code.
 
-#Lab 4 - Enable dragons
+# Lab 4 - Enable dragons
 
 To enable dragons, we need to add an entry to database. Either use web console to open a terminal to `animalsdb` pod, or use `oc` command to exec remotely.
 
@@ -58,7 +58,7 @@ INSERT INTO animals (type) VALUES ('dragon');
 
 Once the value is inserted, observe that animals pod became ready, and old pod got terminated. Opening the `cat` route now lists all the dragons on our servers.
 
-#Lab 5 - Enable metrics collection
+# Lab 5 - Enable metrics collection
 
 `cat` application exposes prometheus metrics at `/metrics` endpoint.
 
