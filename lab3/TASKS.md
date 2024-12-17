@@ -52,7 +52,7 @@ To enable dragons, we need to add an entry to database. Either use web console t
 Once in pod, we can connect to database and insert `dragon` into `animals` table:
 ```
 $ psql animals
-INSERT INTO animals (type) VALUES ('dragon');
+INSERT INTO types (type) VALUES ('dragon');
 ```
 
 Once the value is inserted, observe that animals pod became ready, and old pod got terminated. Opening the `cat` route now lists all the dragons on our servers.
