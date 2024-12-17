@@ -7,7 +7,7 @@ $ oc apply -f prerequisites.yaml
 
 This will create objects needed for this lab.
 
-#Lab 1 - Change number of replicas of `cat` deployment
+# Lab 1 - Change number of replicas of `cat` deployment
 
 Use either web console or oc command to edit the `cat` deployment and increase number of replicas to 3.
 
