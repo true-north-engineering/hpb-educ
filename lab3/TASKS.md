@@ -7,7 +7,7 @@ $ oc apply -f prerequisites.yaml
 
 This will create objects needed for this lab.
 
-# Lab 1 - Change number of replicas of `cat` deployment
+#Lab 1 - Change number of replicas of `cat` deployment
 
 Use either web console or oc command to edit the `cat` deployment and increase number of replicas to 3.
 
@@ -19,7 +19,7 @@ I you change number of replicas you can see that openshift automatically balance
 
 Set number of replicas back to 1.
 
- #Lab 2 - Add liveliness and readiness probes
+# Lab 2 - Add liveliness and readiness probes
 
 `animals` application provides `livez` and `readyz` endpoints to enable health checks.
 
