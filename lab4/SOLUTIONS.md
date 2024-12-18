@@ -44,9 +44,7 @@ Username: admin
 Password: <nexus_password>
 
 Open the pipeline ServiceAccount and under secrets add 
-```
   - name: nexus-docker-auth
-```
 
 or CLI
 
